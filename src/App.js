@@ -1,26 +1,36 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import jwt_decode from 'jwt-decode'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import store from './store'
+
+import Header from './components/Header'
+import Login from './components/Auth/Login'
+import Register from './components/Auth/Register'
+import Body from './components/Header'
+
+class App extends React.Component {
+  render () {
+    return (
+      <Provider store={store}>
+        <div className="App">
+          <BrowserRouter>
+            <Header />
+            <Switch>
+              <Route exact path="/" component={Body} />
+              <Route path="/login" component={Login} />
+              <Route path="/register" component={Register} />
+              {/* <Route path="/profile/:userId" component={Profile} />
+              <Route path="/search" component={Search} />
+              <Route component={NotFound}/> */}
+            </Switch>
+          </BrowserRouter>
+        </div>
+      </Provider>
+    );
+  }
 }
 
 export default App;
