@@ -31,3 +31,16 @@
     transform: rotate(360deg);
   }
 }
+.ms1 {
+  flex-grow: 1;
+  margin-right: 76px;
+}
+.redtext {
+  color: red;
+}
+#navbardrop {
+  cursor: pointer;
+}
+.dfd {
+  cursor: pointer;
+}

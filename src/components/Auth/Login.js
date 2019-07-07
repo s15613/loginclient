@@ -1,87 +1,41 @@
 import React from 'react'
-import { withRouter } from 'react-router-dom'
+import { Formik } from 'formik'
+import * as Yup from 'yup'
+import FormStart from './FormStart'
 import { connect } from 'react-redux'
 import { loginUser } from '../../actions/authActions'
 
+const schema = Yup.object().shape({
+	email: Yup
+	 .string()
+	 .email("Email not valid")
+	 .required("Email is required"),
+	password: Yup
+	 .string()
+	 .min(6,"Password must be at least 6")
+	 .max(30,"Password too long")
+	 .required("Password is required")
+})
+
 class Login extends React.Component {
-	constructor (props) {
-		super(props)
-		this.state = {
-			email: '',
-			password: '',
-			errors: {}
-		}
-		this.handleChange = this.handleChange.bind(this)
-		this.handleSubmit = this.handleSubmit.bind(this)
-	}
-	componentDidMount () {
-		if(this.props.auth.isAuthenticated) {
-			this.props.history.push('/')
-		}
-	}
-	componentWillReceiveProps(nextProps) {
-		if (nextProps.errors) {
-			this.setState({ errors: nextProps.errors })
-		}
+	
+	handleSubmit = (values, actions) => {
+		this.props.loginUser(values, actions.setErrors)
+	 }
 
-		if (nextProps.auth.isAuthenticated) {
-			this.props.history.push('/')
-		}
-	}
-	handleChange (e) {
-		this.setState({ [e.target.name]: e.target.value })
-	}
-	handleSubmit (e) {
-		e.preventDefault()
-		const userData = {
-			email: this.state.email,
-			password: this.state.password,
-		}
-
-		this.props.loginUser(userData)
-	}
 	render () {
-		const { errors } = this.state
 		return (
-                        <div class="container col-4">
-                                <form onSubmit={this.handleSubmit}>
-                                        <div class="form-group">
-                                                <label for="email">Email:</label>
-                                                <input 
-                                                        type="email" 
-                                                        class="form-control" 
-                                                        id="email" 
-                                                        placeholder="Enter email"
-                                                        value={this.state.email}
-                                                        onChange={this.handleChange}
-                                                        name="email"
-                                                        // helperText={errors.email ? errors.email : ''}
-                                                        // error={errors.email ? true : false } 
-                                                />
-                                        </div>
-                                        <div class="form-group">
-                                                <label for="pwd">Password:</label>
-                                                <input 
-                                                        type="password" 
-                                                        class="form-control" 
-                                                        id="pwd" 
-                                                        placeholder="Enter password" 
-                                                        name="password" 
-                                                        value={this.state.password}
-                                                        onChange={this.handleChange}
-                                                />
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Login</button>
-                                </form>
-                      </div>
+			<Formik
+				initialValues={{
+					email: '',
+					password: ''
+				}}
+				validationSchema={schema}
+				onSubmit={this.handleSubmit}
+				render={(props) => <FormStart {...props} />}
+			/>
 		)
 	}
 }
 
-const mapStateToProps = (state) => ({
-	auth: state.auth,
-	errors: state.errors
-})
-
-
-export default connect(mapStateToProps, { loginUser })(withRouter((Login)))
+export default connect(null, { loginUser })(Login)

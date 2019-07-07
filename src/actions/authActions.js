@@ -1,16 +1,21 @@
 import axios from 'axios'
+import jwt_decode from 'jwt-decode'
 import * as types from '../constants'
 import setAuthHeader from '../utils/setAuthHeader'
 
-export const loginUser = (userData) => dispatch => {
-	axios.post('http://localhost:5000/api/users/login', userData)
+axios.defaults.baseURL = 'https://loginserverapi.herokuapp.com/api/users'
+
+export const loginUser = (userData, setErrors) => dispatch => {
+	axios.post('/login', userData)
 		.then(res => {
 			const { token } = res.data 
 			localStorage.setItem('jwtToken', token)
 			setAuthHeader(token)
-			dispatch(getCurrentUser())
+			const decoded = jwt_decode(token)
+			dispatch(setCurrentUser(decoded))
 		})
 		.catch(err => {
+			setErrors({...err.response.data})
 			dispatch({
 				type: types.GET_ERRORS,
 				payload: err.response.data
@@ -18,18 +23,16 @@ export const loginUser = (userData) => dispatch => {
 		})
 }
 
-export const registerUser = (userData, history) => dispatch => {
-	axios.post('http://localhost:5000/api/users/register', userData)
+export const registerUser = (userData, history, setErrors) => dispatch => {
+	axios.post('/register', userData)
 		.then(res => history.push('/login'))
-		.catch(err => dispatch({
-			type: types.GET_ERRORS,
-			payload: err.response.data
-		}))
-}
-
-export const getCurrentUser = () => dispatch => {
-	axios.get('http://localhost:5000/api/users')
-		.then(res => dispatch(setCurrentUser(res.data)))
+		.catch(err => {
+			setErrors({...err.response.data})
+			dispatch({
+				type: types.GET_ERRORS,
+				payload: err.response.data
+			})
+		})
 }
 
 export const setCurrentUser = (data) => {
@@ -42,5 +45,5 @@ export const setCurrentUser = (data) => {
 export const logoutUser = () => dispatch => {
 	localStorage.removeItem('jwtToken')
 	setAuthHeader()
-	dispatch(setCurrentUser())
+	dispatch(setCurrentUser({}))
 }

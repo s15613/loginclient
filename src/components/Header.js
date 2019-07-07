@@ -5,12 +5,12 @@ import { logoutUser } from '../actions/authActions'
 
 class Header extends React.Component {
 
-    handleLogout () {
+    handleLogout = () => {
 		this.props.logoutUser()
 	}
 
     render () {
-        const { isAuthenticated, user } = this.props;
+        const { isAuthenticated } = this.props;
 
         const loginmenus = (
             <div className="dropdown-menu">
@@ -20,12 +20,11 @@ class Header extends React.Component {
         )
 
         const logoutmenus = (
-            <div className="dropdown-menu">
-                <Link 
-                    to='/' 
+            <div className="dropdown-menu dfd">
+                <div 
                     className="dropdown-item"
                     onClick={this.handleLogout}
-                    >Logout</Link>
+                    >Logout</div>
                 <Link to='#' className="dropdown-item">Profile</Link>
             </div>
         )
@@ -33,7 +32,7 @@ class Header extends React.Component {
         return (
             <nav className="navbar navbar-expand-sm bg-dark navbar-dark">    
                 <Link to='/' className="navbar-brand">LOGO</Link>
-                <ul className="navbar-nav d-flex justify-content-between">
+                <ul className="navbar-nav d-flex ms1">
                     <li className="nav-item">
                         <Link to='#' className="nav-link">Link 1</Link>
                     </li>
@@ -45,9 +44,9 @@ class Header extends React.Component {
                         <button className="btn btn-success" type="submit">Search</button>
                     </form>
                     <li className="nav-item dropdown ml-auto">
-                        <a className="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                        <div className="nav-link dropdown-toggle" id="navbardrop" data-toggle="dropdown">
                         Menu
-                        </a>
+                        </div>
                         { isAuthenticated ? logoutmenus : loginmenus }
                     </li>
                 </ul>

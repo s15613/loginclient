@@ -2,7 +2,7 @@ import * as types from '../constants'
 
 const initialState = {
 	isAuthenticated: false,
-	user: null
+	user: {}
 }
 
 export default function (state = initialState, action) {
